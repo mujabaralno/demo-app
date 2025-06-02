@@ -157,7 +157,7 @@ export default function LoginForm() {
                 type="text"
                 required
                 className="appearance-none relative block w-full pl-10 pr-12 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-colors"
-                placeholder="Enter your Employee ID (e.g., ADMIN001)"
+                placeholder="Enter your Employee ID"
                 value={formData.employee_id}
                 onChange={(e) => handleInputChange('employee_id', e.target.value.toUpperCase())}
                 disabled={loading}
