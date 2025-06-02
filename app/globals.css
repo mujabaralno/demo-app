@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #F8F8FF;
     --foreground: #ededed;
   }
 }
@@ -23,4 +23,155 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .wrapper {
+    @apply max-w-6xl mx-auto p-1 px-5 md:px-10 md:py-4 lg:mx-auto w-full;
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+
+  /* TYPOGRAPHY */
+  /* 64 */
+  .h1-bold {
+    @apply font-bold lg:text-[4rem] md:text-4xl text-2xl lg:leading-16 md:leading-12;
+  }
+
+  /* 40 */
+  .h2-semibold {
+    @apply font-semibold text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] xl:text-[40px] xl:leading-[48px];
+  }
+
+  .h2-medium {
+    @apply font-medium text-[32px] leading-[40px] lg:text-[36px] lg:leading-[44px] xl:text-[40px] xl:leading-[48px];
+  }
+
+  /* 36 */
+  .h3-bold {
+    @apply font-bold text-[28px] leading-[36px] md:text-[28px] md:leading-[44px];
+  }
+
+  .h3-medium {
+    @apply font-medium text-[28px] leading-[36px] md:text-[36px] md:leading-[44px];
+  }
+
+  /* 32 */
+  .h4-medium {
+    @apply font-medium text-[32px] leading-[40px];
+  }
+
+  /* 28 */
+  .h5-bold {
+    @apply font-bold text-[28px] leading-[36px];
+  }
+
+  /* 24 */
+  .p-bold-24 {
+    @apply font-bold text-[24px] leading-[36px];
+  }
+
+  .p-medium-24 {
+    @apply font-medium text-[24px] leading-[36px];
+  }
+
+  .p-regular-24 {
+    @apply font-normal text-[24px] leading-[36px];
+  }
+
+  /* 20 */
+  .p-bold-20 {
+    @apply font-bold text-[20px] leading-[30px] tracking-[2%];
+  }
+
+  .p-semibold-20 {
+    @apply text-[20px] font-semibold leading-[30px] tracking-[2%];
+  }
+
+  .p-medium-20 {
+    @apply text-[20px] font-medium leading-[30px];
+  }
+
+  .p-regular-20 {
+    @apply text-[20px] font-normal leading-[30px] tracking-[2%];
+  }
+
+  /* 18 */
+  .p-semibold-18 {
+    @apply text-[18px] font-semibold leading-[28px] tracking-[2%];
+  }
+
+  .p-medium-18 {
+    @apply text-[18px] font-medium leading-[28px];
+  }
+
+  .p-regular-18 {
+    @apply text-[18px] font-normal leading-[28px] tracking-[2%];
+  }
+
+  /* 16 */
+  .p-bold-16 {
+    @apply text-[16px] font-bold leading-[24px];
+  }
+
+  .p-medium-16 {
+    @apply text-[16px] font-medium leading-[24px];
+  }
+
+  .p-regular-16 {
+    @apply text-[16px] font-normal leading-[24px];
+  }
+
+  /* 14 */
+  .p-semibold-14 {
+    @apply text-[14px] font-semibold leading-[20px];
+  }
+
+  .p-medium-14 {
+    @apply text-[14px] font-medium leading-[20px];
+  }
+
+  .p-regular-14 {
+    @apply text-[14px] font-normal leading-[20px];
+  }
+
+  /* 12 */
+  .p-medium-12 {
+    @apply text-[12px] font-medium leading-[20px];
+  }
+
+  /* SHADCN OVERRIDES */
+  .select-field {
+    @apply w-full bg-gray-400 h-[54px] placeholder:text-white rounded-full px-5 py-3 border-none focus-visible:ring-transparent focus:ring-transparent ;
+  }
+
+  .input-field {
+    @apply bg-white h-[54px] focus-visible:ring-offset-0 placeholder:text-gray-400 border-1 border-black rounded-full px-4 py-3 focus-visible:ring-black ;
+  }
+
+  .textarea {
+    @apply bg-white flex flex-1 placeholder:text-gray-400  px-5 py-3 border-1 border-black focus-visible:ring-black ;
+  }
+
+  .button {
+    @apply rounded-full h-[54px];
+  }
+
+  .select-item {
+    @apply py-3 cursor-pointer focus:bg-gray-400;
+  }
+
+  .toggle-switch {
+    @apply bg-gray-300;
+  }
+}
+
+.datePicker {
+  width: 100%;
 }
