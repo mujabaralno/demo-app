@@ -1,11 +1,15 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+import HeadNav from "@/components/dashboard/shared/HeadNav";
 
 const Header = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const nextQuoteNumberRef = useRef(1);
 
   // Notification state
   const [notification, setNotification] = useState(null);
@@ -81,12 +85,13 @@ const Header = () => {
       <header className="w-full bg-white">
         <div className="flex justify-between items-center wrapper">
           <div>
-            <h1 className="h3-bold text-black">
-              Welcome, {user.full_name || user.employee_id}
-            </h1>
-            <p className="p-14-medium text-gray-400">
-              Monitor all of your projects and tasks here
-            </p>
+          <HeadNav
+            currentQuoteNumber={`PE-${String(nextQuoteNumberRef.current - 1).padStart(
+              3,
+              "0"
+            )}`}
+            currentEmployee="System Admin"
+          />
           </div>
 
           <div className="flex justify-end items-center max-w-xs w-full gap-4">

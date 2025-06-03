@@ -175,3 +175,198 @@ body {
 .datePicker {
   width: 100%;
 }
+
+
+/* styles/globals.css (add at the bottom, after @tailwind directives) */
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-completed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+
+/* Card style (you used var(--card-shadow) and var(--border-radius) – we can approximate) */
+.card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  color: #000;
+  margin-bottom: 2.5rem;
+  margin-top: 1rem;
+}
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+}
+
+/* Buttons */
+.btn {
+  padding: 1rem 2rem;
+  border-radius: 0.875rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  position: relative;
+  overflow: hidden;
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+.btn:hover::before {
+  left: 100%;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+  color: white;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(59, 130, 246, 0.4);
+}
+.btn-secondary {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+.btn-success {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+.btn-warning {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  color: white;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+/* Metric Card */
+.metric-card {
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border-radius: 0.875rem;
+  padding: 1.5rem;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #059669);
+}
+.metric-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+.metric-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e40af;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.metric-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Data tables */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+}
+.data-table th {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+.data-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Suggestion card */
+.suggestion-card {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 2px solid #0ea5e9;
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  margin: 1rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.suggestion-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #0ea5e9, #0284c7);
+}

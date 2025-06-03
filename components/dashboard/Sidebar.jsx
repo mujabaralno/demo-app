@@ -10,7 +10,7 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 left-0 w-[20rem] bg-white p-3 min-h-screen">
+    <aside className="sticky top-0 left-0 w-[10rem] bg-white p-3 min-h-screen">
       <div className="p-4">
         <Image src="/next.svg" alt="logo" width={100} height={100} />
       </div>
@@ -23,7 +23,7 @@ const Sidebar = () => {
             <Link className="" href={link.route} key={link.text}>
               <div
                 className={cn(
-                  "flex gap-4 items-center p-4 rounded-lg text-gray-400 justify-start",
+                  "flex gap-4 items-center p-4 rounded-lg text-gray-500 justify-start",
                   isActive && "bg-[#25388C] shadow-sm"
                 )}
               >
@@ -33,7 +33,7 @@ const Sidebar = () => {
                     alt="icon"
                     fill
                     className={`${
-                      isActive ? "brightness-40 invert" : "brightness-200 invert"
+                      isActive ? "brightness-10 invert" : "brightness-600 invert"
                     }  object-contain`}
                   />
                 </div>
