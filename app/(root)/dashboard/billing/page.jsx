@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import HeadNav from "@/components/dashboard/shared/HeadNav";
@@ -12,12 +12,12 @@ export default function BillingPage() {
   useEffect(() => {
     // Load results from localStorage when component mounts
     try {
-      const savedResults = localStorage.getItem('currentResults');
+      const savedResults = localStorage.getItem("currentResults");
       if (savedResults) {
         setResults(JSON.parse(savedResults));
       }
     } catch (error) {
-      console.error('Error loading results:', error);
+      console.error("Error loading results:", error);
     }
     setLoading(false);
   }, []);
@@ -40,13 +40,23 @@ export default function BillingPage() {
     <>
       <Head>
         <title>Professional Printing Dashboard - Billing & Invoicing</title>
-        <meta name="description" content="Professional printing billing and invoicing system." />
+        <meta
+          name="description"
+          content="Professional printing billing and invoicing system."
+        />
       </Head>
 
       <div className="min-h-screen p-4">
+        <div className="md:hidden flex">
+          <Link
+            className="btn btn-primary md:hidden flex my-5"
+            href="/dashboard"
+          >
+            Back Home
+          </Link>
+        </div>
+
         <div className="max-w-[1600px] mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-
-
           {/* Content Section */}
           <div className="p-8">
             {results ? (
@@ -58,10 +68,11 @@ export default function BillingPage() {
                     No Invoice Data Available
                   </h2>
                   <p className="text-gray-600 mb-6">
-                    No invoice or results to display. Please calculate an estimate first.
+                    No invoice or results to display. Please calculate an
+                    estimate first.
                   </p>
-                  <Link 
-                    href="/" 
+                  <Link
+                    href="/"
                     className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
                   >
                     Go to Job Estimation

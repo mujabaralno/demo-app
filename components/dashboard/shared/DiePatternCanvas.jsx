@@ -1,5 +1,4 @@
-"use client"
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export default function DiePatternCanvas({
   sheetLength,
@@ -9,43 +8,49 @@ export default function DiePatternCanvas({
   orientation,
   efficiency,
   itemsPerSheet,
+  layoutType,
+  materialUsage,
 }) {
   const canvasRef = useRef(null);
+  const [layoutInfo, setLayoutInfo] = useState({
+    layoutPattern: "0 x 0",
+    itemsPerRow: 0,
+    itemsPerCol: 0
+  });
 
-  function drawPattern() {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const drawEnhancedDiePattern = (canvas, config) => {
+    if (!canvas) return null;
+    
     const ctx = canvas.getContext("2d");
-
-    // High DPI support
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
+    
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
     canvas.style.width = rect.width + "px";
     canvas.style.height = rect.height + "px";
-
+  
     ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-
+  
     const padding = 60;
-    const canvasUsableWidth  = canvas.width / dpr - 2 * padding;
+    const canvasUsableWidth = canvas.width / dpr - 2 * padding;
     const canvasUsableHeight = canvas.height / dpr - 2 * padding;
-
-    const scaleX = canvasUsableWidth / sheetLength;
-    const scaleY = canvasUsableHeight / sheetWidth;
+  
+    const scaleX = canvasUsableWidth / config.sheetLength;
+    const scaleY = canvasUsableHeight / config.sheetWidth;
     const scale = Math.min(scaleX, scaleY);
-
-    const scaledSheetLength = sheetLength * scale;
-    const scaledSheetWidth  = sheetWidth * scale;
+  
+    const scaledSheetLength = config.sheetLength * scale;
+    const scaledSheetWidth = config.sheetWidth * scale;
     const startX = (canvas.width / dpr - scaledSheetLength) / 2;
     const startY = (canvas.height / dpr - scaledSheetWidth) / 2;
-
+  
     // Draw sheet background
     ctx.fillStyle = "#f8fafc";
     ctx.fillRect(startX, startY, scaledSheetLength, scaledSheetWidth);
-
-    // Draw sheet outline (gradient border)
+  
+    // Draw sheet outline dengan gradient border
     const gradient = ctx.createLinearGradient(
       startX,
       startY,
@@ -57,24 +62,84 @@ export default function DiePatternCanvas({
     ctx.strokeStyle = gradient;
     ctx.lineWidth = 4;
     ctx.strokeRect(startX, startY, scaledSheetLength, scaledSheetWidth);
-
-    // Compute item dims (with bleed)
-    const bleed = 0.3;
-    const grip  = 1.0;
-    let currItemL = itemLength + bleed;
-    let currItemW = itemWidth + bleed;
-    if (orientation === "rotated") {
-      [currItemL, currItemW] = [currItemW, currItemL];
+  
+    // Setup dimensions dengan bleed dan grip
+    const bleed = 0.0; 
+    const grip = 0.0;  
+    
+    // 🔧 PERBAIKAN UTAMA: Apply orientation dari awal yang benar
+    let currItemL, currItemW;
+    
+    if (config.orientation === "rotated") {
+      // Jika rotated, item width menjadi length (horizontal) dan item length menjadi width (vertikal)
+      currItemL = config.itemWidth + bleed;  // Yang horizontal (sepanjang sheet length)
+      currItemW = config.itemLength + bleed; // Yang vertikal (sepanjang sheet width)
+    } else {
+      // Normal orientation
+      currItemL = config.itemLength + bleed; // Yang horizontal
+      currItemW = config.itemWidth + bleed;  // Yang vertikal  
     }
-
-    const usableSheetL = sheetLength - grip;
-    const usableSheetW = sheetWidth - grip;
+  
+    // 🔧 PERBAIKAN: Sheet dimensions yang benar
+    const usableSheetL = config.sheetLength - grip; // Horizontal space - grip
+    const usableSheetW = config.sheetWidth;         // Vertical space (full)
+    
+    // 🔧 PERBAIKAN: Hitung layout dengan benar
+    // itemsPerRow = berapa item secara horizontal (sepanjang length)
+    // itemsPerCol = berapa item secara vertikal (sepanjang width)
+    const maxItemsPerRow = Math.floor(usableSheetL / currItemL);
+    const maxItemsPerCol = Math.floor(usableSheetW / currItemW);
+    
+    console.log("=== DEBUG LAYOUT CALCULATION (FIXED) ===");
+    console.log("Sheet dimensions:", config.sheetLength, "x", config.sheetWidth);
+    console.log("Item original:", config.itemLength, "x", config.itemWidth);
+    console.log("Orientation:", config.orientation);
+    console.log("Item after orientation + bleed:", currItemL, "x", currItemW);
+    console.log("Usable sheet space:", usableSheetL, "x", usableSheetW);
+    console.log("Max items per row (horizontal):", maxItemsPerRow);
+    console.log("Max items per col (vertical):", maxItemsPerCol);
+    console.log("Max total items possible:", maxItemsPerRow * maxItemsPerCol);
+    console.log("Target items:", config.itemsPerSheet);
+    
+    // Cari layout terbaik yang bisa memuat itemsPerSheet
+    let bestLayout = { rows: 0, cols: 0, totalItems: 0, efficiency: 0 };
+    
+    // Coba berbagai kombinasi layout
+    for (let cols = 1; cols <= maxItemsPerRow; cols++) {
+      for (let rows = 1; rows <= maxItemsPerCol; rows++) {
+        const totalItems = cols * rows;
+        if (totalItems >= config.itemsPerSheet) {
+          const spaceUsed = (cols * currItemL * rows * currItemW);
+          const totalUsableSpace = usableSheetL * usableSheetW;
+          const efficiency = (spaceUsed / totalUsableSpace) * 100;
+          
+          if (efficiency > bestLayout.efficiency || 
+              (efficiency === bestLayout.efficiency && totalItems < bestLayout.totalItems)) {
+            bestLayout = { rows, cols, totalItems, efficiency };
+          }
+        }
+      }
+    }
+    
+    // Fallback jika tidak ada layout yang bisa memuat semua items
+    if (bestLayout.totalItems === 0) {
+      bestLayout.cols = maxItemsPerRow;
+      bestLayout.rows = maxItemsPerCol;
+      bestLayout.totalItems = maxItemsPerRow * maxItemsPerCol;
+    }
+    
+    const itemsPerRow = bestLayout.cols;  // Horizontal
+    const itemsPerCol = bestLayout.rows;  // Vertical
+    const actualItemsToShow = Math.min(config.itemsPerSheet, bestLayout.totalItems);
+    
+    console.log("Final layout:", itemsPerRow, "cols x", itemsPerCol, "rows =", bestLayout.totalItems, "items");
+    console.log("Will show:", actualItemsToShow, "items");
+    
+    // Scale untuk drawing
     const scaledItemL = currItemL * scale;
     const scaledItemW = currItemW * scale;
-    const itemsPerRow = Math.floor(usableSheetL / currItemL);
-    const itemsPerCol = Math.floor(usableSheetW / currItemW);
-
-    // Draw gripper margin
+    
+    // Draw gripper margin area
     ctx.fillStyle = "rgba(239, 68, 68, 0.3)";
     ctx.fillRect(
       startX + usableSheetL * scale,
@@ -82,22 +147,25 @@ export default function DiePatternCanvas({
       grip * scale,
       scaledSheetWidth
     );
+  
+    // Label gripper area
     ctx.fillStyle = "#ef4444";
-    ctx.font = "bold 10px Inter";
+    ctx.font = "bold 10px sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(
       "Gripper",
       startX + usableSheetL * scale + (grip * scale) / 2,
       startY + 15
     );
-
-    // Draw items in rows/cols
-    for (let row = 0; row < itemsPerCol; row++) {
-      for (let col = 0; col < itemsPerRow; col++) {
+    
+    // 🔧 PERBAIKAN: Draw items dengan orientasi yang benar
+    let itemCount = 1;
+    for (let row = 0; row < itemsPerCol && itemCount <= actualItemsToShow; row++) {
+      for (let col = 0; col < itemsPerRow && itemCount <= actualItemsToShow; col++) {
         const x = startX + col * scaledItemL;
         const y = startY + row * scaledItemW;
-
-        // Background gradient
+  
+        // Draw item background dengan gradient
         const itemGrad = ctx.createLinearGradient(
           x,
           y,
@@ -108,104 +176,104 @@ export default function DiePatternCanvas({
         itemGrad.addColorStop(1, "rgba(29, 78, 216, 0.6)");
         ctx.fillStyle = itemGrad;
         ctx.fillRect(x, y, scaledItemL, scaledItemW);
-
-        // Border
+  
+        // Draw item border
         ctx.strokeStyle = "#1e40af";
         ctx.lineWidth = 2;
         ctx.strokeRect(x, y, scaledItemL, scaledItemW);
-
-        // Bleed area
-        const bleedScale = bleed * scale;
+  
+        // Draw bleed area (dashed line)
+        const bleedPx = bleed * scale;
         ctx.strokeStyle = "#f59e0b";
         ctx.lineWidth = 1;
         ctx.setLineDash([3, 3]);
         ctx.strokeRect(
-          x + bleedScale / 2,
-          y + bleedScale / 2,
-          scaledItemL - bleedScale,
-          scaledItemW - bleedScale
+          x + bleedPx / 2,
+          y + bleedPx / 2,
+          scaledItemL - bleedPx,
+          scaledItemW - bleedPx
         );
         ctx.setLineDash([]);
-
-        // Label item # if big enough
-        const itemNumber = row * itemsPerRow + col + 1;
+  
+        // Draw item number
         if (scaledItemL > 40 && scaledItemW > 25) {
           ctx.fillStyle = "#ffffff";
           ctx.font = `bold ${Math.min(
             scaledItemL / 8,
             scaledItemW / 6,
             14
-          )}px Inter`;
+          )}px sans-serif`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText(itemNumber, x + scaledItemL / 2, y + scaledItemW / 2);
+          ctx.fillText(itemCount, x + scaledItemL / 2, y + scaledItemW / 2);
         }
+        itemCount++;
       }
     }
-
+  
     // Draw waste areas
-    ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
-    const rightWasteWidth =
-      scaledSheetLength - itemsPerRow * scaledItemL - grip * scale;
-    if (rightWasteWidth > 0) {
+    const rightWaste = scaledSheetLength - itemsPerRow * scaledItemL - grip * scale;
+    if (rightWaste > 0) {
+      ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
       ctx.fillRect(
         startX + itemsPerRow * scaledItemL,
         startY,
-        rightWasteWidth,
+        rightWaste,
         itemsPerCol * scaledItemW
       );
     }
-    const bottomWasteHeight =
-      scaledSheetWidth - itemsPerCol * scaledItemW;
-    if (bottomWasteHeight > 0) {
+    
+    const bottomWaste = scaledSheetWidth - itemsPerCol * scaledItemW;
+    if (bottomWaste > 0) {
+      ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
       ctx.fillRect(
         startX,
         startY + itemsPerCol * scaledItemW,
         scaledSheetLength - grip * scale,
-        bottomWasteHeight
+        bottomWaste
       );
     }
-
-    // Efficiency indicator
-    const effVal = parseFloat(efficiency);
-    const effColor =
-      effVal > 85 ? "#10b981" : effVal > 70 ? "#f59e0b" : "#ef4444";
+  
+    // Draw efficiency badge
+    const effVal = parseFloat(config.efficiency);
+    const effColor = effVal > 85 ? "#10b981" : effVal > 70 ? "#f59e0b" : "#ef4444";
     ctx.fillStyle = effColor;
-    ctx.fillRect(
-      startX + scaledSheetLength - 100,
-      startY + 10,
-      90,
-      30
-    );
+    ctx.fillRect(startX + scaledSheetLength - 100, startY + 10, 90, 30);
     ctx.fillStyle = "white";
-    ctx.font = "bold 12px Inter";
+    ctx.font = "bold 12px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(`${efficiency}%`, startX + scaledSheetLength - 55, startY + 25);
-    ctx.font = "10px Inter";
-    ctx.fillText(
-      "Efficiency",
-      startX + scaledSheetLength - 55,
-      startY + 35
-    );
-
-    // Dimension labels
+    ctx.fillText(`${config.efficiency}%`, startX + scaledSheetLength - 55, startY + 25);
+    ctx.font = "10px sans-serif";
+    ctx.fillText("Efficiency", startX + scaledSheetLength - 55, startY + 35);
+  
+    // Draw dimension labels
     ctx.fillStyle = "#1f2937";
-    ctx.font = "12px Inter";
+    ctx.font = "12px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
+    
     ctx.fillText(
-      `${sheetLength.toFixed(1)}cm`,
-      startX + scaledSheetLength / 2,
+      `${config.sheetLength.toFixed(1)}cm`, 
+      startX + scaledSheetLength / 2, 
       startY + scaledSheetWidth + 35
     );
+  
     ctx.save();
     ctx.translate(startX - 35, startY + scaledSheetWidth / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText(`${sheetWidth.toFixed(1)}cm`, 0, 0);
+    ctx.fillText(`${config.sheetWidth.toFixed(1)}cm`, 0, 0);
     ctx.restore();
-  }
+  
+    // Return layout info yang benar
+    return {
+      layoutPattern: `${itemsPerRow} x ${itemsPerCol}`,
+      itemsPerRow: itemsPerRow,
+      itemsPerCol: itemsPerCol,
+      maxPossibleItems: bestLayout.totalItems,
+      actualItemsShown: actualItemsToShow
+    };
+  };
 
-  // Trigger redraw when dependencies change
   useEffect(() => {
     if (
       sheetLength &&
@@ -216,9 +284,34 @@ export default function DiePatternCanvas({
       efficiency !== null &&
       itemsPerSheet !== null
     ) {
-      drawPattern();
+      const config = {
+        sheetLength,
+        sheetWidth,
+        itemLength,
+        itemWidth,
+        orientation,
+        efficiency,
+        itemsPerSheet,
+        layoutType,
+        materialUsage,
+      };
+
+      const result = drawEnhancedDiePattern(canvasRef.current, config);
+      if (result) {
+        setLayoutInfo(result);
+      }
     }
-  }, [sheetLength, sheetWidth, itemLength, itemWidth, orientation, efficiency, itemsPerSheet]);
+  }, [
+    sheetLength,
+    sheetWidth,
+    itemLength,
+    itemWidth,
+    orientation,
+    efficiency,
+    itemsPerSheet,
+    layoutType,
+    materialUsage,
+  ]);
 
   return (
     <div className="bg-white rounded-lg border-2 border-gray-200 p-6 mt-8">
@@ -229,10 +322,44 @@ export default function DiePatternCanvas({
         ref={canvasRef}
         className="w-full h-[300px] md:h-[400px] rounded-md shadow-lg"
       />
-      <div id="canvasInfo" className="mt-4 p-4 bg-gray-50 rounded-md text-gray-700 text-sm text-left">
-        {/* If nothing drawn yet, show placeholder text */}
-        <div className="text-center">
-          Calculate an estimate to see the die pattern visualization
+      <div className="mt-4 p-4 bg-gray-50 rounded-md text-gray-700 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div className="font-semibold text-gray-800 mb-2">
+              Layout Details
+            </div>
+            <div className="space-y-1 text-sm">
+              <div>
+                <span className="font-medium">Items Fitted:</span>{" "}
+                {layoutInfo?.actualItemsShown || itemsPerSheet || 0}
+              </div>
+              <div>
+                <span className="font-medium">Orientation:</span>{" "}
+                {orientation === "rotated" ? "Rotated" : "Normal"}
+              </div>
+              <div>
+                <span className="font-medium">Layout:</span>{" "}
+                {layoutInfo?.layoutPattern || "0 x 0"}
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="font-semibold text-gray-800 mb-2">
+              Material Info
+            </div>
+            <div className="space-y-1 text-sm">
+              <div>
+                <span className="font-medium">Material Usage:</span>{" "}
+                {efficiency || 0}%
+              </div>
+              <div>
+                <span className="font-medium">Bleed Allowance:</span> 3mm
+              </div>
+              <div>
+                <span className="font-medium">Gripper Margin:</span> 10mm
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

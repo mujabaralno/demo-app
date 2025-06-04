@@ -2,8 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+import MobileNav from "@/components/dashboard/MobileNav"
 
 import HeadNav from "@/components/dashboard/shared/HeadNav";
+import Image from "next/image";
 
 const Header = () => {
   const [user, setUser] = useState(null);
@@ -83,8 +85,8 @@ const Header = () => {
       )}
 
       <header className="w-full bg-white">
-        <div className="flex justify-between items-center wrapper">
-          <div>
+        <div className="flex justify-between items-center wrapper ">
+          <div className="md:flex hidden">
           <HeadNav
             currentQuoteNumber={`PE-${String(nextQuoteNumberRef.current - 1).padStart(
               3,
@@ -94,9 +96,16 @@ const Header = () => {
           />
           </div>
 
-          <div className="flex justify-end items-center max-w-xs w-full gap-4">
+          <div className="flex md:justify-end justify-between items-center md:max-w-xs max-w-3xl w-full gap-4">
+            <Image 
+            src="/next.svg"
+            alt="logo"
+            width={60}
+            height={20}
+            className="md:hidden flex"
+            />
             <span
-              className={`text-xs px-2 py-1 rounded-full ${
+              className={`text-xs px-2 py-1 rounded-full md:flex hidden ${
                 user.role === "admin"
                   ? "bg-purple-100 text-purple-800"
                   : "bg-blue-100 text-blue-800"
@@ -118,6 +127,9 @@ const Header = () => {
             >
               Logout
             </button>
+            <div className="md:hidden flex">
+              <MobileNav />
+            </div>
           </div>
         </div>
       </header>

@@ -10,7 +10,7 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 left-0 w-[10rem] bg-white p-3 min-h-screen">
+    <aside className="sticky top-0 md:flex hidden left-0 w-[10rem] bg-white p-3 min-h-screen">
       <div className="p-4">
         <Image src="/next.svg" alt="logo" width={100} height={100} />
       </div>

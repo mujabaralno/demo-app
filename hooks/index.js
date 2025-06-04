@@ -1,31 +1,18 @@
-export { useCanvas } from "./useCanvas";
-export { useQuoteManager } from "./useQuoteManager";
-export { usePaperSizes } from "./usePaperSizes";
-export { useFormValidation } from "./useFormValidation";
-
 export function calculateMaxItemsPerSheet(sheetL, sheetW, itemL, itemW) {
-    const bleed = 0.3;  // 3mm bleed
-    const grip  = 1.0;  // 1cm gripper margin
-    const adjL  = itemL + bleed;
-    const adjW  = itemW + bleed;
-    const usableL = sheetL - grip;
-    const usableW = sheetW - grip;
-  
-    const count1 = Math.floor(usableL / adjL) * Math.floor(usableW / adjW);
-    const count2 = Math.floor(usableL / adjW) * Math.floor(usableW / adjL);
-    if (count1 >= count2) {
-      return { count: count1, orientation: "normal", effL: adjL, effW: adjW };
-    }
-    return { count: count2, orientation: "rotated", effL: adjW, effW: adjL };
-  }
+  const adjL = itemL   // do NOT add bleed
+  const adjW = itemW   // do NOT add bleed
+  const usableL = sheetL  // do NOT subtract grip
+  const usableW = sheetW  // do NOT subtract grip
 
-export function calculateMaterialEfficiency(
-  sheetL,
-  sheetW,
-  itemL,
-  itemW,
-  itemsPerSheet
-) {
+  const count1 = Math.floor(usableL / adjL) * Math.floor(usableW / adjW)
+  const count2 = Math.floor(usableL / adjW) * Math.floor(usableW / adjL)
+  if (count1 >= count2) {
+    return { count: count1, orientation: 'normal', effL: adjL, effW: adjW }
+  }
+  return { count: count2, orientation: 'rotated', effL: adjW, effW: adjL }
+}
+
+export function calculateMaterialEfficiency(sheetL, sheetW, itemL, itemW, itemsPerSheet) {
   const bleed = 0.3;
   const grip = 1.0;
   const usableArea = (sheetL - grip) * (sheetW - grip);
@@ -35,10 +22,11 @@ export function calculateMaterialEfficiency(
   const efficiency = (usedArea / usableArea) * 100;
   return {
     efficiency: efficiency.toFixed(1),
-    wasteArea: waste.toFixed(1),
+    wasteArea: waste.toFixed(1)
   };
 }
 
+// ================ calculate Production Time ============== //
 export function calculateProductionTime(
   totalSheets,
   printSides,
@@ -79,3 +67,7 @@ export function calculateProductionTime(
     }),
   };
 }
+
+
+// ================ Calculate ============== //
+

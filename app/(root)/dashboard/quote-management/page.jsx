@@ -77,6 +77,14 @@ export default function QuotesPage() {
       </Head>
 
       <div className="min-h-screen p-4">
+      <div className="md:hidden flex">
+          <Link
+            className="btn btn-primary md:hidden flex my-5"
+            href="/dashboard"
+          >
+            Back Home
+          </Link>
+        </div>
         <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
 
           {/* Content Section */}
@@ -92,7 +100,7 @@ export default function QuotesPage() {
                   </p>
                   <Link 
                     href="/" 
-                    className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    className="btn btn-primary"
                   >
                     Go to Job Estimation
                   </Link>
