@@ -206,13 +206,13 @@ export default function Home() {
   
     // Download
     doc.save(`Estimate_${resultObj.quoteNumber}.pdf`);
-    alert("Classic-style PDF downloaded!");
+    toast.success("Classic-style PDF downloaded!");
   }
 
   // Called by ResultsPanel when user clicks "Email Quote"
   function handleEmailQuote(resultObj) {
     if (!resultObj) {
-      alert("Please calculate an estimate first!");
+      toast.error("Please calculate an estimate first!");
       return;
     }
     // Build `mailto:` link
@@ -238,7 +238,7 @@ export default function Home() {
   // Function to handle "Go to Billing" button
   function handleGoToBilling() {
     if (!results) {
-      alert("Please calculate an estimate first!");
+      toast.success("Please calculate an estimate first!");
       return;
     }
     // Results already saved to localStorage, redirect to billing page

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import QuoteManagementPanel from "@/components/dashboard/QuoteManagementPanel";
 import Link from "next/link";
+import { toast } from "sonner"
 
 export default function QuotesPage() {
   const [savedQuotes, setSavedQuotes] = useState([]);
@@ -35,7 +36,7 @@ export default function QuotesPage() {
 
   function handleExportAllQuotes() {
     if (!savedQuotes || savedQuotes.length === 0) {
-      alert("No quotes to export!");
+      toast.error("No quotes to export!");
       return;
     }
     let csv = "data:text/csv;charset=utf-8,";

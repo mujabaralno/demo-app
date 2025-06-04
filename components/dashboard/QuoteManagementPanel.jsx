@@ -39,7 +39,7 @@ export default function QuoteManagementPanel({
   }
 
   return (
-    <div className="card p-6 mt-8 overflow-x-auto">
+    <div className="card mt-8 overflow-x-auto">
       <div className="flex justify-between items-center mb-4 border-b pb-2">
         <h2 className="text-xl font-semibold text-gray-800 flex items-center">
           {/* Icon omitted */}

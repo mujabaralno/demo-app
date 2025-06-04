@@ -48,10 +48,6 @@ export default function ResultsPanel({ results, onSaveQuote, onExportPDF, onEmai
       `;
     }
     breakdown += `
-        <div class="flex justify-between bg-green-50 p-2 rounded">
-          <span>Profit Margin (35%):</span>
-          <span class="font-medium">${formatUSD(cb.profit)}</span>
-        </div>
         <hr class="my-2" />
         <div class="flex justify-between font-bold text-lg">
           <span>Total Estimate:</span>
@@ -279,8 +275,8 @@ export default function ResultsPanel({ results, onSaveQuote, onExportPDF, onEmai
       <div className="flex flex-col items-center text-center bg-green-600 text-white rounded-lg p-6 relative overflow-hidden mb-6">
         <h3 className="text-3xl font-extrabold">{formatUSD(cb.total)}</h3>
         <p>
-          <span>{formatUSD(cb.total / results.itemsNeeded)} per item</span> |{" "}
-          <span>Margin: 35%</span>
+          <span>{formatUSD(cb.total / results.itemsNeeded)} per item</span>
+
         </p>
       </div>
 

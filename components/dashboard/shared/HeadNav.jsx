@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 
-export default function Header({ currentQuoteNumber, currentEmployee }) {
+export default function Header({ currentQuoteNumber, currentEmployee, location }) {
   const [formattedDate, setFormattedDate] = useState("");
 
   useEffect(() => {
@@ -17,25 +17,8 @@ export default function Header({ currentQuoteNumber, currentEmployee }) {
   }, []);
 
   return (
-    <div className=" relative overflow-hidden rounded-t-lg">
-      {/* Decorative pattern */}
-      <div className="absolute inset-0 opacity-10 overflow-hidden">
-        <svg
-          className="w-full h-full"
-          xmlns="http://www.w3.org/2000/svg"
-          width="60"
-          height="60"
-          viewBox="0 0 60 60"
-        >
-          <g fill="none" fillRule="evenodd">
-            <g fill="#FFFFFF" fillOpacity="0.1">
-              <path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z" />
-            </g>
-          </g>
-        </svg>
-      </div>
-
-      <div className="relative z-10">
+    <div className="relative overflow-hidden">
+      <div className="relative z-10 ">
         <h1 className="text-4xl font-bold mb-2 text-black">
           Professional Printing Dashboard
         </h1>
@@ -44,7 +27,7 @@ export default function Header({ currentQuoteNumber, currentEmployee }) {
           <span>|</span>
           <span>{formattedDate}</span>
           <span>|</span>
-          <span>Valid for 30 days</span>
+          <span>{location}</span>
           <span>|</span>
           <span>
             Employee: <strong>{currentEmployee}</strong>

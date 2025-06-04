@@ -38,7 +38,9 @@ export const ADDITION_COSTS = {                        // Finishing per MVP
   foldingPerLinePerSheet: 0.02,                  // $0.02 per fold line / sheet
   foilingPerSheet: 0.15,                        // $0.15 per sheet
   embossingPerSheet: 0.20,                      // $0.20 per sheet
-  uvPrintingPerSheet: 0.10                       // $0.10 per sheet
+  uvPrintingPerSheet: 0.10,                       // $0.10 per sheet
+  laminationPerSheet: 0.10,
+  dieCuttingPerSheet: 0.12,
   // (Lamination/die‐cutting omitted; MVP did not specify them)
 };
 export const RUSH_MULTIPLIERS = {

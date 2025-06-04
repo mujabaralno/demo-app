@@ -378,7 +378,7 @@ const EstimationForm = ({ onCalculate, onGoToBilling, hasResults, onReset }) => 
             <p className="block text-sm font-semibold text-gray-700 mb-2">
               Additional Finishing Options:
             </p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
               <CheckboxInput
                 label="Folding"
                 checked={addFolding}
